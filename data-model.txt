@@ -1,0 +1,32 @@
+var Sequelize = require('sequelize');      ====> requiring the 'sequelize' package
+
+var db = new Sequelize('reddit', 'dreboom', undefined, {    ====> telling sequelize whart db to use, what user and psswrd
+	dialect: 'mysql'    ====> telling sequelize what db we are using
+});
+
+
+var User = db.define('user', {    ====> defining 'user' table
+    username: Sequelize.STRING,    ====> sepcifying username is a string
+    password: Sequelize.STRING    ====> specifying password is a string
+});
+
+
+var Content = db.define('content', {    ====> defining 'content' table
+    url: Sequelize.STRING,    ====> specifying 'url' is a string
+    title: Sequelize.STRING    ====> specifying 'title' is a string
+});
+
+
+var Vote = db.define('vote', {    ====> defining 'vote' table
+    upVote: Sequelize.BOOLEAN    ====> specifying 'upVote' is a boolean expression
+});
+
+
+Content.belongsTo(User); // This will add a `setUser` function on content objects     ====> specifying the user/content relationship
+User.hasMany(Content); // This will add an `addContent` function on user objects
+
+
+User.belongsToMany(Content, {through: Vote, as: 'Upvotes'}); // This will add an `add`    ====> specifying the user/vote/content relationship
+Content.belongsToMany(User, {through: Vote});
+
+//db.sync(); // Only needs to be used once!    ====> does the sync!
